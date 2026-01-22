@@ -117,6 +117,7 @@ docker compose restart
 | `BACKUP_FREQUENCY` | `60` | Backup interval in minutes |
 | `DISABLE_SENTRY` | `false` | Disable crash reporting |
 | `USE_AOT_CACHE` | `true` | Use AOT cache for faster startup |
+| `HYTALE_DOWNLOADER_URL` | `https://downloader.hytale.com/...` | URL to download hytale-downloader |
 | `AUTO_UPDATE` | `false` | Check for updates on startup |
 | `PATCHLINE` | `release` | `release` or `pre-release` channel |
 | `CREDENTIALS_PATH` | | Path to credentials file (see below) |
@@ -144,14 +145,6 @@ For automated deployments, you can provide a credentials file to skip the intera
 3. The container will automatically use this file for authentication.
 
 Alternatively, set a custom path via `CREDENTIALS_PATH` in `.env`.
-
-### Build Arguments
-
-When building the image, you can customize the downloader URL:
-
-```bash
-docker compose build --build-arg HYTALE_DOWNLOADER_URL="https://your-url/hytale-downloader.zip"
-```
 
 ### Networking
 
@@ -185,6 +178,7 @@ The following volumes are used for persistent data:
 | Volume | `hytale-backups` | `/opt/hytale/backups` | Automatic backups |
 | Volume | `hytale-cache` | `/opt/hytale/.cache` | Optimized cache files |
 | Volume | `hytale-downloads` | `/opt/hytale/downloads` | Downloaded game files |
+| Volume | `hytale-bin` | `/opt/hytale/bin` | hytale-downloader binary |
 | Volume | `hytale-downloader-config` | `/home/hytale/.config/...` | OAuth tokens |
 
 ## Commands

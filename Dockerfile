@@ -24,20 +24,10 @@ RUN mkdir -p /opt/hytale/mods \
     && mkdir -p /opt/hytale/backups \
     && mkdir -p /opt/hytale/downloads \
     && mkdir -p /opt/hytale/config \
+    && mkdir -p /opt/hytale/bin \
     && mkdir -p /home/hytale/.config/hytale-downloader
 
 WORKDIR /opt/hytale
-
-# Download URL for hytale-downloader (update if URL changes)
-# The downloader is available from the Hytale support documentation
-ARG HYTALE_DOWNLOADER_URL="https://cdn.hytale.com/downloader/hytale-downloader.zip"
-
-# Download and extract hytale-downloader
-RUN curl -fsSL "${HYTALE_DOWNLOADER_URL}" -o /tmp/hytale-downloader.zip \
-    && unzip /tmp/hytale-downloader.zip -d /opt/hytale/ \
-    && chmod +x /opt/hytale/hytale-downloader* \
-    && rm /tmp/hytale-downloader.zip \
-    || echo "Warning: Could not download hytale-downloader. Manual server file copy required."
 
 # Copy any pre-existing server files (optional, will be skipped if empty)
 COPY --chown=hytale:hytale server/ ./server-files/
@@ -67,10 +57,11 @@ ENV USE_AOT_CACHE="true"
 ENV EXTRA_ARGS=""
 
 # Auto-download configuration
-ENV AUTO_UPDATE="false"
+ENV AUTO_UPDATE="true"
 ENV PATCHLINE="release"
 ENV CREDENTIALS_PATH=""
 ENV SKIP_DOWNLOADER_UPDATE_CHECK="false"
+ENV HYTALE_DOWNLOADER_URL="https://downloader.hytale.com/hytale-downloader.zip"
 
 # Entrypoint script for flexible configuration
 COPY --chown=hytale:hytale entrypoint.sh /opt/hytale/entrypoint.sh

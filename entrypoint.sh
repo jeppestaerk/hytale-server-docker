@@ -3,7 +3,9 @@ set -e
 
 DOWNLOAD_DIR="/opt/hytale/downloads"
 SERVER_FILES_DIR="/opt/hytale/server-files"
+BIN_DIR="/opt/hytale/bin"
 DEFAULT_CREDENTIALS_PATH="/opt/hytale/config/credentials.json"
+DOWNLOADER_PATH="${BIN_DIR}/hytale-downloader"
 
 # Function to check if server files exist
 check_server_files() {
@@ -13,22 +15,93 @@ check_server_files() {
     return 1
 }
 
+# Function to download and install hytale-downloader
+install_downloader() {
+    echo "=================================================="
+    echo "INSTALLING HYTALE DOWNLOADER"
+    echo "=================================================="
+
+    if [ -z "${HYTALE_DOWNLOADER_URL}" ]; then
+        echo "Error: HYTALE_DOWNLOADER_URL is not set!"
+        return 1
+    fi
+
+    echo "Downloading hytale-downloader from:"
+    echo "  ${HYTALE_DOWNLOADER_URL}"
+    echo ""
+
+    # Download the downloader
+    if ! curl -fsSL "${HYTALE_DOWNLOADER_URL}" -o /tmp/hytale-downloader.zip; then
+        echo "Error: Failed to download hytale-downloader"
+        return 1
+    fi
+
+    # Extract to bin directory
+    echo "Extracting hytale-downloader..."
+    unzip -o /tmp/hytale-downloader.zip -d "${BIN_DIR}/"
+
+    # Find and make executable (handles different naming conventions)
+    chmod +x "${BIN_DIR}"/hytale-downloader* 2>/dev/null || true
+
+    # Find the actual binary (could be hytale-downloader, hytale-downloader-linux-amd64, etc.)
+    if [ -f "${BIN_DIR}/hytale-downloader" ]; then
+        DOWNLOADER_PATH="${BIN_DIR}/hytale-downloader"
+    else
+        # Find any executable that matches the pattern
+        DOWNLOADER_PATH=$(find "${BIN_DIR}" -name "hytale-downloader*" -type f -executable | head -1)
+    fi
+
+    # Clean up
+    rm -f /tmp/hytale-downloader.zip
+
+    if [ -z "${DOWNLOADER_PATH}" ] || [ ! -f "${DOWNLOADER_PATH}" ]; then
+        echo "Error: Could not find hytale-downloader binary after extraction"
+        return 1
+    fi
+
+    echo "hytale-downloader installed: ${DOWNLOADER_PATH}"
+    echo ""
+}
+
+# Function to find the downloader binary
+find_downloader() {
+    # Check common locations
+    if [ -f "${BIN_DIR}/hytale-downloader" ]; then
+        DOWNLOADER_PATH="${BIN_DIR}/hytale-downloader"
+        return 0
+    fi
+
+    # Find any matching executable
+    local found=$(find "${BIN_DIR}" -name "hytale-downloader*" -type f -executable 2>/dev/null | head -1)
+    if [ -n "${found}" ]; then
+        DOWNLOADER_PATH="${found}"
+        return 0
+    fi
+
+    return 1
+}
+
 # Function to download server files using hytale-downloader
 download_server_files() {
     echo "=================================================="
     echo "HYTALE SERVER DOWNLOAD"
     echo "=================================================="
 
-    # Check if hytale-downloader exists
-    if [ ! -f "/opt/hytale/hytale-downloader" ]; then
-        echo "Error: hytale-downloader not found!"
-        echo "Please either:"
-        echo "  1. Rebuild the image with the correct HYTALE_DOWNLOADER_URL"
-        echo "  2. Manually copy server files to the server/ directory"
-        exit 1
+    # Check if hytale-downloader exists, if not try to install it
+    if ! find_downloader; then
+        echo "hytale-downloader not found. Attempting to install..."
+        if ! install_downloader; then
+            echo ""
+            echo "Error: Could not install hytale-downloader!"
+            echo "Please either:"
+            echo "  1. Set HYTALE_DOWNLOADER_URL to a valid download URL"
+            echo "  2. Manually copy server files to the server/ directory"
+            exit 1
+        fi
     fi
 
     echo "Downloading Hytale server files..."
+    echo "Using downloader: ${DOWNLOADER_PATH}"
     echo ""
 
     # Build downloader arguments
@@ -59,7 +132,7 @@ download_server_files() {
     echo ""
 
     # Run the downloader
-    /opt/hytale/hytale-downloader ${DOWNLOADER_ARGS}
+    "${DOWNLOADER_PATH}" ${DOWNLOADER_ARGS}
 
     # Extract the downloaded files
     if [ -f "${DOWNLOAD_DIR}/game.zip" ]; then
@@ -96,9 +169,9 @@ copy_server_files() {
 
 # Function to check for updates
 check_for_updates() {
-    if [ -f "/opt/hytale/hytale-downloader" ]; then
+    if find_downloader; then
         echo "Checking for server updates..."
-        CURRENT_VERSION=$(/opt/hytale/hytale-downloader -print-version 2>/dev/null || echo "unknown")
+        CURRENT_VERSION=$("${DOWNLOADER_PATH}" -print-version 2>/dev/null || echo "unknown")
         echo "Current game version: ${CURRENT_VERSION}"
     fi
 }

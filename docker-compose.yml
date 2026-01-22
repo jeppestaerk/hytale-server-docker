@@ -32,6 +32,7 @@ services:
       - PATCHLINE=${PATCHLINE:-release}
       - CREDENTIALS_PATH=${CREDENTIALS_PATH:-}
       - SKIP_DOWNLOADER_UPDATE_CHECK=${SKIP_DOWNLOADER_UPDATE_CHECK:-false}
+      - HYTALE_DOWNLOADER_URL=${HYTALE_DOWNLOADER_URL:-https://downloader.hytale.com/hytale-downloader.zip}
 
     # Persistent volumes for world data and configuration
     volumes:
@@ -49,6 +50,8 @@ services:
       - hytale-cache:/opt/hytale/.cache
       # Downloads (persists downloaded server files)
       - hytale-downloads:/opt/hytale/downloads
+      # Bin directory (persists hytale-downloader binary)
+      - hytale-bin:/opt/hytale/bin
       # Downloader config (persists OAuth tokens)
       - hytale-downloader-config:/home/hytale/.config/hytale-downloader
       # Server files (persists extracted server files)
@@ -80,6 +83,8 @@ volumes:
     name: hytale-cache
   hytale-downloads:
     name: hytale-downloads
+  hytale-bin:
+    name: hytale-bin
   hytale-downloader-config:
     name: hytale-downloader-config
   hytale-server-files:
