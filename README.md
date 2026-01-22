@@ -39,7 +39,16 @@ Enter code: ABCD-1234
 ==================================================================
 ```
 
-Complete the OAuth flow in your browser. Once authenticated, the server files will download and extract automatically.
+Complete the OAuth flow in your browser. Once authenticated, the server files (`HytaleServer.zip`) will download and extract automatically:
+
+```
+HytaleServer.zip
+├── Server/
+│   ├── HytaleServer.jar
+│   ├── HytaleServer.aot
+│   └── Licenses/
+└── Assets.zip
+```
 
 ### 4. Server Authentication
 
@@ -273,6 +282,18 @@ docker compose down
 docker volume rm hytale-server-files hytale-downloads
 docker compose up --build
 ```
+
+## How It Works
+
+On first startup, the container:
+
+1. **Downloads hytale-downloader** from `HYTALE_DOWNLOADER_URL` (if not already present)
+2. **Authenticates** via OAuth2 device flow (interactive) or credentials file (non-interactive)
+3. **Downloads HytaleServer.zip** containing server files and assets
+4. **Extracts** `Server/*` and `Assets.zip` to the server directory
+5. **Starts** the Hytale server with configured JVM and server arguments
+
+Subsequent startups skip the download steps if server files already exist.
 
 ## References
 
