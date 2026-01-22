@@ -105,7 +105,7 @@ download_server_files() {
     echo ""
 
     # Build downloader arguments
-    DOWNLOADER_ARGS="-download-path ${DOWNLOAD_DIR}/game.zip"
+    DOWNLOADER_ARGS="-download-path ${DOWNLOAD_DIR}/HytaleServer.zip"
 
     # Add credentials path if specified or if default exists
     if [ -n "${CREDENTIALS_PATH}" ]; then
@@ -135,26 +135,36 @@ download_server_files() {
     "${DOWNLOADER_PATH}" ${DOWNLOADER_ARGS}
 
     # Extract the downloaded files
-    if [ -f "${DOWNLOAD_DIR}/game.zip" ]; then
+    # Structure: HytaleServer.zip contains:
+    #   - Server/HytaleServer.jar
+    #   - Server/HytaleServer.aot
+    #   - Server/Licenses/...
+    #   - Assets.zip
+    if [ -f "${DOWNLOAD_DIR}/HytaleServer.zip" ]; then
         echo "Extracting server files..."
-        unzip -o "${DOWNLOAD_DIR}/game.zip" -d "${DOWNLOAD_DIR}/extracted"
+        unzip -o "${DOWNLOAD_DIR}/HytaleServer.zip" -d "${DOWNLOAD_DIR}/extracted"
 
-        # Copy server files to working directory
+        # Copy server files from Server/ subdirectory
         if [ -d "${DOWNLOAD_DIR}/extracted/Server" ]; then
             cp -r "${DOWNLOAD_DIR}/extracted/Server/"* /opt/hytale/
-            echo "Server files extracted successfully"
+            echo "Server files extracted (HytaleServer.jar, HytaleServer.aot)"
+        else
+            echo "Warning: Server/ directory not found in archive"
         fi
 
+        # Copy Assets.zip from root of archive
         if [ -f "${DOWNLOAD_DIR}/extracted/Assets.zip" ]; then
             cp "${DOWNLOAD_DIR}/extracted/Assets.zip" /opt/hytale/
             echo "Assets.zip copied successfully"
+        else
+            echo "Warning: Assets.zip not found in archive"
         fi
 
-        # Clean up
+        # Clean up extracted files (keep the zip for potential re-extraction)
         rm -rf "${DOWNLOAD_DIR}/extracted"
-        echo "Download complete!"
+        echo "Download and extraction complete!"
     else
-        echo "Error: Download failed - game.zip not found"
+        echo "Error: Download failed - HytaleServer.zip not found"
         exit 1
     fi
 }
