@@ -1,0 +1,26 @@
+# Environment files
+.env
+
+# Server files (must be obtained from Hytale)
+server/HytaleServer.jar
+server/Assets.zip
+server/HytaleServer.aot
+
+# Mods (download separately)
+mods/*.jar
+mods/*.zip
+
+# Credentials (sensitive!)
+credentials.json
+.hytale-downloader-credentials.json
+
+# Downloader
+hytale-downloader*
+
+# Don't ignore placeholder files
+!server/.gitkeep
+!mods/.gitkeep
+!config/.gitkeep
+
+# PDF documentation
+*.pdf

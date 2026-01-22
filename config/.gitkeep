@@ -1,0 +1,19 @@
+# Hytale Downloader Configuration Directory
+#
+# Place your credentials.json file here for non-interactive authentication.
+#
+# To generate a credentials file:
+# 1. Run the hytale-downloader locally once to complete OAuth
+# 2. Copy the generated credentials file here
+#
+# Default credentials file location (local):
+#   Linux: ~/.hytale-downloader-credentials.json
+#   Windows: %USERPROFILE%\.hytale-downloader-credentials.json
+#
+# The file should be named: credentials.json
+#
+# With a credentials file, the container can download server files
+# automatically without interactive OAuth authentication.
+#
+# SECURITY NOTE: Keep your credentials.json file secure and never
+# commit it to version control!

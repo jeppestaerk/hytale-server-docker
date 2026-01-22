@@ -1,0 +1,86 @@
+services:
+  hytale-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hytale-server
+    restart: unless-stopped
+
+    # Enable interactive mode for OAuth authentication
+    stdin_open: true
+    tty: true
+
+    # UDP port for QUIC protocol
+    ports:
+      - "${SERVER_PORT:-5520}:5520/udp"
+
+    # Environment configuration
+    environment:
+      # JVM settings
+      - JAVA_MIN_HEAP=${JAVA_MIN_HEAP:-2G}
+      - JAVA_MAX_HEAP=${JAVA_MAX_HEAP:-4G}
+      # Server settings
+      - SERVER_PORT=5520
+      - AUTH_MODE=${AUTH_MODE:-authenticated}
+      - ENABLE_BACKUP=${ENABLE_BACKUP:-true}
+      - BACKUP_FREQUENCY=${BACKUP_FREQUENCY:-60}
+      - DISABLE_SENTRY=${DISABLE_SENTRY:-false}
+      - USE_AOT_CACHE=${USE_AOT_CACHE:-true}
+      - EXTRA_ARGS=${EXTRA_ARGS:-}
+      # Auto-download settings
+      - AUTO_UPDATE=${AUTO_UPDATE:-false}
+      - PATCHLINE=${PATCHLINE:-release}
+      - CREDENTIALS_PATH=${CREDENTIALS_PATH:-}
+      - SKIP_DOWNLOADER_UPDATE_CHECK=${SKIP_DOWNLOADER_UPDATE_CHECK:-false}
+
+    # Persistent volumes for world data and configuration
+    volumes:
+      # Mods directory (bind mount for easy management)
+      - ./mods:/opt/hytale/mods
+      # Config directory (for credentials file)
+      - ./config:/opt/hytale/config
+      # World and player data
+      - hytale-universe:/opt/hytale/universe
+      # Server logs
+      - hytale-logs:/opt/hytale/logs
+      # Backups
+      - hytale-backups:/opt/hytale/backups
+      # Cache
+      - hytale-cache:/opt/hytale/.cache
+      # Downloads (persists downloaded server files)
+      - hytale-downloads:/opt/hytale/downloads
+      # Downloader config (persists OAuth tokens)
+      - hytale-downloader-config:/home/hytale/.config/hytale-downloader
+      # Server files (persists extracted server files)
+      - hytale-server-files:/opt/hytale
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-6G}
+        reservations:
+          memory: ${MEMORY_RESERVATION:-4G}
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+volumes:
+  hytale-universe:
+    name: hytale-universe
+  hytale-logs:
+    name: hytale-logs
+  hytale-backups:
+    name: hytale-backups
+  hytale-cache:
+    name: hytale-cache
+  hytale-downloads:
+    name: hytale-downloads
+  hytale-downloader-config:
+    name: hytale-downloader-config
+  hytale-server-files:
+    name: hytale-server-files

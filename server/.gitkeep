@@ -1,0 +1,12 @@
+# Optional: Place Hytale server files here for manual installation
+#
+# Files needed:
+# - HytaleServer.jar
+# - Assets.zip
+# - HytaleServer.aot (optional, for faster startup)
+#
+# Note: If you don't provide these files, the container will automatically
+# download them using the Hytale Downloader CLI on first startup.
+# This requires completing an OAuth authentication flow.
+#
+# See README.md for instructions on obtaining these files manually.

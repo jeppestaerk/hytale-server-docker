@@ -1,0 +1,13 @@
+# Place mod files here (.jar or .zip)
+# Mods are loaded automatically on server startup
+#
+# Download mods from sources like CurseForge and drop them here.
+#
+# Recommended plugins from the Hytale Server Manual:
+# - Nitrado:WebServer - Base plugin for web applications and APIs
+# - Nitrado:Query - Exposes server status via HTTP
+# - Nitrado:PerformanceSaver - Dynamically limits view distance
+# - ApexHosting:PrometheusExporter - Exposes server and JVM metrics
+#
+# Note: Disable Sentry (DISABLE_SENTRY=true) during active mod development
+# to avoid submitting your development errors.
