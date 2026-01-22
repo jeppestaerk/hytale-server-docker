@@ -1,12 +1,15 @@
-# Optional: Place Hytale server files here for manual installation
+# Optional: Place HytaleServer.zip here for manual installation
 #
-# Files needed:
-# - HytaleServer.jar
-# - Assets.zip
-# - HytaleServer.aot (optional, for faster startup)
+# The zip file contains:
+#   - Server/HytaleServer.jar
+#   - Server/HytaleServer.aot
+#   - Server/Licenses/
+#   - Assets.zip
 #
-# Note: If you don't provide these files, the container will automatically
-# download them using the Hytale Downloader CLI on first startup.
+# It will be extracted automatically on container startup.
+#
+# Note: If you don't provide this file, the container will automatically
+# download it using the Hytale Downloader CLI on first startup.
 # This requires completing an OAuth authentication flow.
 #
-# See README.md for instructions on obtaining these files manually.
+# See README.md for instructions on obtaining HytaleServer.zip.

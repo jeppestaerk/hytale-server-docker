@@ -169,11 +169,27 @@ download_server_files() {
     fi
 }
 
-# Function to copy pre-packaged server files
+# Function to extract pre-packaged server files
 copy_server_files() {
-    if [ -d "${SERVER_FILES_DIR}" ] && [ "$(ls -A ${SERVER_FILES_DIR} 2>/dev/null)" ]; then
-        echo "Copying pre-packaged server files..."
-        cp -rn "${SERVER_FILES_DIR}/"* /opt/hytale/ 2>/dev/null || true
+    # Check for HytaleServer.zip in server-files directory
+    if [ -f "${SERVER_FILES_DIR}/HytaleServer.zip" ]; then
+        echo "Found pre-packaged HytaleServer.zip, extracting..."
+        unzip -o "${SERVER_FILES_DIR}/HytaleServer.zip" -d "${DOWNLOAD_DIR}/extracted"
+
+        # Copy server files from Server/ subdirectory
+        if [ -d "${DOWNLOAD_DIR}/extracted/Server" ]; then
+            cp -r "${DOWNLOAD_DIR}/extracted/Server/"* /opt/hytale/
+            echo "Server files extracted (HytaleServer.jar, HytaleServer.aot)"
+        fi
+
+        # Copy Assets.zip from root of archive
+        if [ -f "${DOWNLOAD_DIR}/extracted/Assets.zip" ]; then
+            cp "${DOWNLOAD_DIR}/extracted/Assets.zip" /opt/hytale/
+            echo "Assets.zip copied successfully"
+        fi
+
+        # Clean up
+        rm -rf "${DOWNLOAD_DIR}/extracted"
     fi
 }
 

@@ -79,19 +79,16 @@ If you prefer to provide server files manually instead of using auto-download:
 
 **Option A: Copy from Launcher Installation**
 
-Find the files in your Hytale Launcher installation:
-- **Windows:** `%appdata%\Hytale\install\release\package\game\latest\Server\`
-- **Linux:** `$XDG_DATA_HOME/Hytale/install/release/package/game/latest/Server/`
-- **macOS:** `~/Application Support/Hytale/install/release/package/game/latest/Server/`
+Find `HytaleServer.zip` in your Hytale Launcher installation:
+- **Windows:** `%appdata%\Hytale\install\release\package\game\latest\`
+- **Linux:** `$XDG_DATA_HOME/Hytale/install/release/package/game/latest/`
+- **macOS:** `~/Application Support/Hytale/install/release/package/game/latest/`
 
-Copy these files to `server/`:
-- `HytaleServer.jar`
-- `Assets.zip`
-- `HytaleServer.aot` (optional, for faster startup)
+Copy `HytaleServer.zip` to the `server/` directory. It will be extracted automatically on startup.
 
 **Option B: Use Hytale Downloader CLI locally**
 
-Download the official Hytale Downloader from the Hytale support documentation and run it locally, then copy the files to `server/`.
+Download the official Hytale Downloader from the Hytale support documentation, run it locally, and copy the resulting `HytaleServer.zip` to `server/`.
 
 ## Adding Mods
 
@@ -242,10 +239,8 @@ hytale-server-docker/
 ├── .env.example
 ├── .env                 # Your configuration (copy from .env.example)
 ├── README.md
-├── server/              # Optional: pre-packaged server files
-│   ├── HytaleServer.jar
-│   ├── Assets.zip
-│   └── HytaleServer.aot
+├── server/              # Optional: pre-packaged HytaleServer.zip
+│   └── HytaleServer.zip
 ├── mods/                # Place mods here (bind-mounted)
 │   └── *.jar or *.zip
 └── config/              # Credentials for non-interactive auth

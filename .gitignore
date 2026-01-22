@@ -2,9 +2,7 @@
 .env
 
 # Server files (must be obtained from Hytale)
-server/HytaleServer.jar
-server/Assets.zip
-server/HytaleServer.aot
+server/HytaleServer.zip
 
 # Mods (download separately)
 mods/*.jar
